@@ -12,7 +12,11 @@ services:
       - key: SPRING_MAIL_USERNAME
         value: ""  # La vraie valeur doit être définie dans le dashboard Render (sécurisé)
       - key: SPRING_MAIL_PASSWORD
-        value: ""  # La vraie valeur doit être définie dans le dashboard Render (sécurisé)
+        sync: false  # À définir dans le dashboard Render
+      - key: ADMIN_ACCOUNTS
+        sync: false  # ex. admin:motDePasseLong,second-admin:autreMotDePasse
+      - key: APP_FRONTEND_ORIGIN
+        sync: false  # Origine exacte du site frontend, par exemple https://mon-site.onrender.com
 
   # Frontend TypeScript (par exemple React)
   - type: web
@@ -21,4 +25,6 @@ services:
     rootDir: reservation-frontend
     buildCommand: yarn; yarn build  # ou npm install; npm run build selon ton setup
     staticPublishPath: ./build
-g
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false  # URL publique de reservation-api, par exemple https://reservation-api.onrender.com

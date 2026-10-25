@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ReservationForm from './components/ReservationForm';
-import ReservationList from './components/ReservationList';
 import AdminRoute from './components/AdminRoute'; // mot de passe simple
 
 function App() {

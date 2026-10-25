@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   Card,
@@ -12,11 +12,11 @@ import {
   Tab,
   Box,
   Divider,
-  Grid,
 } from "@mui/material";
 import dayjs from "dayjs";
 import 'dayjs/locale/fr';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import SlotManager from "./SlotManager";
 
 dayjs.locale('fr');
 dayjs.extend(localizedFormat);
@@ -32,15 +32,23 @@ export interface Reservation {
   status: "PENDING" | "ACCEPTED" | "REJECTED";
 }
 
-const ReservationList: React.FC = () => {
+interface ReservationListProps {
+  username: string;
+  password: string;
+  onLogout: () => void;
+}
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
+const ReservationList: React.FC<ReservationListProps> = ({ username, password, onLogout }) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [tab, setTab] = useState<"PENDING" | "ACCEPTED" | "PAST">("PENDING");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const prevLength = useRef(0);
 
-  const fetchReservations = async () => {
+  const fetchReservations = useCallback(async () => {
     try {
-      const res = await axios.get<Reservation[]>("http://localhost:8080/api/reservations");
+      const res = await axios.get<Reservation[]>(`${API_URL}/api/reservations`, { auth: { username, password } });
       setReservations(res.data);
 
       if (res.data.length > prevLength.current) setOpenSnackbar(true);
@@ -48,17 +56,17 @@ const ReservationList: React.FC = () => {
     } catch (error) {
       console.error("Erreur lors de la récupération :", error);
     }
-  };
+  }, [username, password]);
 
   useEffect(() => {
     fetchReservations();
     const interval = setInterval(fetchReservations, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchReservations]);
 
   const updateStatus = async (id: number, action: "accept" | "reject") => {
     try {
-      await axios.put(`http://localhost:8080/api/reservations/${id}/${action}`);
+      await axios.put(`${API_URL}/api/reservations/${id}/${action}`, undefined, { auth: { username, password } });
       fetchReservations();
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
@@ -100,9 +108,15 @@ const ReservationList: React.FC = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', fontWeight: 'bold' }}>
-        Liste des réservations
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Box />
+        <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+          Liste des réservations
+        </Typography>
+        <Button onClick={onLogout}>Se déconnecter</Button>
+      </Box>
+
+      <SlotManager username={username} password={password} />
 
       {/* Prochaine course */}
       {nextReservation && (
@@ -132,8 +146,9 @@ const ReservationList: React.FC = () => {
       </Tabs>
 
       {/* Liste des réservations */}
-      <Grid container spacing={3}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
         {displayedReservations.map(r => (
+          <Box key={r.id} sx={{ width: { xs: "100%", sm: "calc(50% - 12px)", md: "calc(33.333% - 16px)" } }}>
             <Card
               variant="outlined"
               sx={{
@@ -167,8 +182,9 @@ const ReservationList: React.FC = () => {
                 </CardActions>
               )}
             </Card>
+          </Box>
         ))}
-      </Grid>
+      </Box>
 
       <Snackbar
         open={openSnackbar}
