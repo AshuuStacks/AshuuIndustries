@@ -35,3 +35,9 @@ Grâce à cette expérience, j'ai appris plusieurs choses :
 - **Adopter une approche orientée solution :** transformer un problème personnel en une initiative susceptible d'être utile à d'autres personnes.
 
 Cette expérience m'a surtout montré qu'un projet intéressant ne doit pas nécessairement commencer par du code. Il peut commencer par un problème concret, une idée simple et une première expérimentation auprès de personnes potentiellement intéressées.
+
+
+<img width="2852" height="1800" alt="image" src="https://github.com/user-attachments/assets/d1f16016-9e2f-4d9b-930e-de52d9a1d15a" />
+<img width="2878" height="1800" alt="image" src="https://github.com/user-attachments/assets/2ee9dad8-725c-4d28-bf9b-152fca5200b8" />
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/1a916688-4c48-418a-b8ef-117af1fbe4cc" />
+
